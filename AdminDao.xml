@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.AdminDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.username as username
+        ,a.password as password
+        ,a.admin_name as adminName
+        ,a.admin_phone as adminPhone
+        ,a.admin_id_number as adminIdNumber
+        ,a.admin_photo as adminPhoto
+        ,a.sex_types as sexTypes
+        ,a.admin_email as adminEmail
+        ,a.admin_address as adminAddress
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.AdminView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM admin  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.username != '' and params.username != null and params.username != 'null' ">
+                and a.username like CONCAT('%',#{params.username},'%')
+            </if>
+            <if test=" params.password != '' and params.password != null and params.password != 'null' ">
+                and a.password like CONCAT('%',#{params.password},'%')
+            </if>
+            <if test=" params.adminName != '' and params.adminName != null and params.adminName != 'null' ">
+                and a.admin_name like CONCAT('%',#{params.adminName},'%')
+            </if>
+            <if test=" params.adminPhone != '' and params.adminPhone != null and params.adminPhone != 'null' ">
+                and a.admin_phone like CONCAT('%',#{params.adminPhone},'%')
+            </if>
+            <if test=" params.adminIdNumber != '' and params.adminIdNumber != null and params.adminIdNumber != 'null' ">
+                and a.admin_id_number like CONCAT('%',#{params.adminIdNumber},'%')
+            </if>
+            <if test="params.sexTypes != null and params.sexTypes != ''">
+                and a.sex_types = #{params.sexTypes}
+            </if>
+            <if test=" params.adminEmail != '' and params.adminEmail != null and params.adminEmail != 'null' ">
+                and a.admin_email like CONCAT('%',#{params.adminEmail},'%')
+            </if>
+            <if test=" params.adminAddress != '' and params.adminAddress != null and params.adminAddress != 'null' ">
+                and a.admin_address like CONCAT('%',#{params.adminAddress},'%')
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
